@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends AppCompatActivity {
 
     public static final String OTP_REGEX = "[0-9]{1,6}";
 
@@ -38,7 +38,7 @@ public class MainActivity extends ListActivity {
             if (c.moveToFirst()) {
                 for (int i = 0; i < c.getCount(); i++) {
                     SMSData sms = new SMSData();
-                    Log.d("sms Message", c.getString(c.getColumnIndexOrThrow("body")).toString());
+                    Log.d("sms Message", c.getString(c.getColumnIndexOrThrow("date")).toString()+"\n"+c.getString(c.getColumnIndexOrThrow("body")).toString());
                     sms.setBody(c.getString(c.getColumnIndexOrThrow("body")).toString());
                     sms.setNumber(c.getString(c.getColumnIndexOrThrow("address")).toString());
                     smsList.add(sms);
@@ -50,7 +50,7 @@ public class MainActivity extends ListActivity {
 
 
             // Set smsList in the ListAdapter
-            setListAdapter(new SMSListAdapter(this, smsList));
+           // setListAdapter(new SMSListAdapter(this, smsList));
 
         }else{
             final int REQUEST_CODE_ASK_PERMISSIONS = 123;
