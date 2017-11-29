@@ -9,7 +9,6 @@
         android:layout_marginTop="14dp"
         android:text="From Someone"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textStyle="bold"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

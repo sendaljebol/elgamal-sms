@@ -1,86 +1,91 @@
 package com.harit.elgamalandroid;
 
-import android.app.ListActivity;
-import android.content.ContentResolver;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.Telephony;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-public class MainActivity extends AppCompatActivity {
-
-    public static final String OTP_REGEX = "[0-9]{1,6}";
+public class MainActivity extends AppCompatActivity implements ConversationFragment.OnConversationSelectedListener{
+private ListView lvConversation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-
-        if(ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.READ_SMS") == PackageManager.PERMISSION_GRANTED) {
-            List<SMSData> smsList = new ArrayList<SMSData>();
-
-            Uri uri = Uri.parse("content://sms/inbox");
-            Cursor c = getContentResolver().query(uri, null, null, null, null);
-            startManagingCursor(c);
-
-            // Read the sms data and store it in the list
-            if (c.moveToFirst()) {
-                for (int i = 0; i < c.getCount(); i++) {
-                    SMSData sms = new SMSData();
-                    Log.d("sms Message", c.getString(c.getColumnIndexOrThrow("date")).toString()+"\n"+c.getString(c.getColumnIndexOrThrow("body")).toString());
-                    sms.setBody(c.getString(c.getColumnIndexOrThrow("body")).toString());
-                    sms.setNumber(c.getString(c.getColumnIndexOrThrow("address")).toString());
-                    smsList.add(sms);
-
-                    c.moveToNext();
-                }
-            }
-            c.close();
-
-
-            // Set smsList in the ListAdapter
-           // setListAdapter(new SMSListAdapter(this, smsList));
-
-        }else{
-            final int REQUEST_CODE_ASK_PERMISSIONS = 123;
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{"android.permission.READ_SMS"}, REQUEST_CODE_ASK_PERMISSIONS);
-        }
-        SmsReceiver.bindListener(new SmsListener() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void messageReceived(String messageText) {
-
-                //From the received text string you may do string operations to get the required OTP
-                //It depends on your SMS format
-                Log.e("Message",messageText);
-                Toast.makeText(MainActivity.this,"Message: "+messageText,Toast.LENGTH_LONG).show();
-
-                // If your OTP is six digits number, you may use the below code
-
-                Pattern pattern = Pattern.compile(OTP_REGEX);
-                Matcher matcher = pattern.matcher(messageText);
-                String otp = "";
-                while (matcher.find())
-                {
-                    otp = matcher.group();
-                }
-
-                Toast.makeText(MainActivity.this,"OTP: "+ otp ,Toast.LENGTH_LONG).show();
-
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
+// Create a new Fragment to be placed in the activity layout
+        ConversationFragment convFragment = new ConversationFragment();
 
+        // Add the fragment to the 'fragment_container' FrameLayout
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, convFragment).commit();
 
+    }
+
+    public void showAboutDialog() {
+        DialogFragment newFragment = new AboutDialogFragment();
+        newFragment.show(getSupportFragmentManager(), "missiles");
+    }
+
+    /**
+     * Handle the creation of the menu
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    /**
+     * when the option is selected
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.about_menu:
+                showAboutDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onConversationSelected(String address) {
+        Log.d("onconversation", address);
+
+        ChatFragment chatFragment = new ChatFragment();
+        Bundle args = new Bundle();
+        args.putString(SMSData.ADDRESS_ARGS, address);
+        chatFragment.setArguments(args);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, chatFragment)
+                .commit();
     }
 
 }
