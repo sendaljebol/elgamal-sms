@@ -69,15 +69,16 @@ OnConversationSelectedListener cListener;
         String[] PERMISSIONS = {Manifest.permission.READ_CONTACTS, Manifest.permission.READ_SMS};
 
         if(!hasPermissions(getContext(), PERMISSIONS)){
-           requestPermissions(PERMISSIONS, PERMISSION_ALL);
+            requestPermissions(PERMISSIONS, PERMISSION_ALL);
         }else{
-            getActivity().getSupportLoaderManager().initLoader(1, null, this);
+
+            getActivity().getSupportLoaderManager().restartLoader(1, null, this);
         }
 
         lvConversation.setOnItemClickListener(this);
-
-        //TODO group message by sender, and display sender name
+        Log.d("on view created", "onviewcreated conv fa");
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -107,6 +108,7 @@ OnConversationSelectedListener cListener;
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
 
+        Log.d("conversation fragment", "onloadfinished");
         if(c.isClosed())return;
         // Read the sms data and store it in the list
         if (c.moveToFirst()) {
@@ -185,7 +187,7 @@ OnConversationSelectedListener cListener;
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         SMSData smsData = (SMSData) smsList.get(position);
-        Log.d("item clicked", smsData.getNumber());
+
         cListener.onConversationSelected(smsData.getNumber());
     }
 }

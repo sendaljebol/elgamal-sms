@@ -11,17 +11,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="11-27 2:12 PM"
+        android:textSize="10sp"
         android:layout_marginBottom="5dp"/>
     <TextView
         android:id="@+id/tv_content_chat"
         android:text="djkaslkdjas kdjas djas dljas dadjls dkas;dj alkdj ad"
         android:textColor="@android:color/white"
         android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="24sp"
+        android:layout_gravity="right"
+        android:gravity="right"
+        android:textSize="12sp"
         android:layout_height="wrap_content"
         android:background="@drawable/layout_sent_bg"
         android:padding="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="40dp"
         />
 
 </LinearLayout>

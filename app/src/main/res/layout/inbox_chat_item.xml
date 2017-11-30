@@ -9,18 +9,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="11-27 2:12 PM"
+        android:textSize="10sp"
         android:layout_marginBottom="5dp"
         android:id="@+id/tv_date_chat"/>
     <TextView
         android:id="@+id/tv_content_chat"
         android:text="djkaslkdjas kdjas djas dljas dadjls dkas;dj alkdj ad"
         android:textColor="@android:color/black"
+        android:layout_marginRight="40dp"
         android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="24sp"
+        android:layout_gravity="left"
+        android:gravity="left"
+        android:textSize="12sp"
         android:layout_height="wrap_content"
         android:background="@drawable/layout_inbox_bg"
         android:padding="10dp"
+        android:layout_marginBottom="10dp"
+
         />
 
 </LinearLayout>

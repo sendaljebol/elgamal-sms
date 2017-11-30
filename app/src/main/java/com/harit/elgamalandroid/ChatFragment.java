@@ -46,7 +46,7 @@ public class ChatFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         lvChat = view.findViewById(R.id.lv_chat);
         // cek permission buat sms
-        getActivity().getSupportLoaderManager().initLoader(2, null, this);
+        getActivity().getSupportLoaderManager().restartLoader(2, null, this);
     }
 
 
@@ -84,8 +84,6 @@ public class ChatFragment extends Fragment implements LoaderManager.LoaderCallba
         }
         c.close();
 
-
-        Log.d("load finished", "calling adapter .. ");
         // Set smsList in the ListAdapter
         lvChat.setAdapter(new ChatListAdapter(getActivity(), smsList));
     }

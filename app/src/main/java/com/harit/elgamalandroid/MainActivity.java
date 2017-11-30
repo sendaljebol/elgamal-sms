@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -83,9 +84,10 @@ private ListView lvConversation;
         args.putString(SMSData.ADDRESS_ARGS, address);
         chatFragment.setArguments(args);
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, chatFragment)
-                .commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, chatFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
 }

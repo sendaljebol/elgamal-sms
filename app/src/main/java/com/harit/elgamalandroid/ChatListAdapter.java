@@ -32,7 +32,6 @@ public class ChatListAdapter extends ArrayAdapter<SMSData> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ChatListAdapter.ChatViewHolderItem viewHolder;
         SMSData data = smsList.get(position);
-        Log.d("getview", "is called");
 
         if(convertView == null){
             Log.d("data tyoe: ", data.getType() + " | "+SMSData.TYPE_SENT+ " | "+SMSData.TYPE_INBOX);
