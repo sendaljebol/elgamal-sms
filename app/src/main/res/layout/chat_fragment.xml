@@ -1,15 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <ListView
+        android:id="@+id/lv_chat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/lv_chat"
-        android:layout_marginTop="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_above="@+id/kontenbawah"
         />
-</LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:background="@color/colorPrimary"
+        android:id="@+id/kontenbawah"
+        >
+
+        <EditText
+            android:id="@+id/et_body_chat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@android:drawable/edit_text"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLines="4"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/et_body_chat">
+            <ImageButton
+                android:id="@+id/btn_send_chat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/send"
+                android:layout_margin="5dp"/>
+            <ImageButton
+                android:id="@+id/btn_send_encrypted_chat"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:src="@drawable/send_encrypted"
+                android:layout_margin="5dp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

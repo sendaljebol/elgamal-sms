@@ -5,7 +5,6 @@ package com.harit.elgamalandroid;
  */
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,6 @@ import java.util.List;
  * List adapter for storing SMS data
  *
  * @author itcuties
- *
  */
 public class ConversationListAdapter extends ArrayAdapter<SMSData> {
 
@@ -36,12 +34,12 @@ public class ConversationListAdapter extends ArrayAdapter<SMSData> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d("conversation adapter", "getview is called");
+
         ViewHolderItem viewHolder;
         SMSData data = smsList.get(position);
 
-        if(convertView == null){
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.conversation_list_item, null);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.conversation_list_item, null);
         }
 
         TextView senderNumber = (TextView) convertView.findViewById(R.id.tv_from_conv);
@@ -50,9 +48,9 @@ public class ConversationListAdapter extends ArrayAdapter<SMSData> {
 
         viewHolder = new ViewHolderItem(senderNumber, dateSent, content);
         convertView.setTag(viewHolder);
-        if(data.getContactName() == null || data.getContactName().isEmpty() || data.getContactName().equals("?")) {
+        if (data.getContactName() == null) {
             viewHolder.getSender().setText(data.getNumber());
-        }else{
+        } else {
             viewHolder.getSender().setText(data.getContactName());
         }
         viewHolder.getDateSent().setText(data.getDateSentInFormat("MM-dd HH:mm"));
@@ -60,7 +58,7 @@ public class ConversationListAdapter extends ArrayAdapter<SMSData> {
         return convertView;
     }
 
-    static class ViewHolderItem{
+    static class ViewHolderItem {
         TextView sender, dateSent, content;
 
         public ViewHolderItem(TextView sender, TextView dateSent, TextView content) {

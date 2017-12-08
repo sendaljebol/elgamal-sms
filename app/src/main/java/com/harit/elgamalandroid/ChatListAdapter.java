@@ -33,32 +33,29 @@ public class ChatListAdapter extends ArrayAdapter<SMSData> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ChatListAdapter.ChatViewHolderItem viewHolder;
-        SMSData data = smsList.get(position);
 
-        if (convertView == null) {
+        SMSData data = smsList.get(position);
+        View v;
+
             if (data.getType() == SMSData.TYPE_INBOX) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.inbox_chat_item, null);
+                v = LayoutInflater.from(getContext()).inflate(R.layout.inbox_chat_item, null);
             } else {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.sent_chat_item, null);
+                v= LayoutInflater.from(getContext()).inflate(R.layout.sent_chat_item, null);
             }
-        }
+
 
         Log.e("pattern match: ", data.getBody()+" | "
                 +data.getDateSent()
                 + " | "+data.getType());
 
-        TextView dateSent = (TextView) convertView.findViewById(R.id.tv_date_chat);
-        TextView content = (TextView) convertView.findViewById(R.id.tv_content_chat);
+        TextView dateSent = (TextView) v.findViewById(R.id.tv_date_chat);
+        TextView content = (TextView) v.findViewById(R.id.tv_content_chat);
 
-        viewHolder = new ChatListAdapter.ChatViewHolderItem(dateSent, content);
-        convertView.setTag(viewHolder);
-
-        viewHolder.getDateSent().setText(data.getDateSentInFormat("MM-dd HH:mm"));
-        viewHolder.getContent().setText(data.getBody());
+        dateSent.setText(data.getDateSentInFormat("MM-dd HH:mm"));
+        content.setText(data.getBody());
 
 
-        return convertView;
+        return v;
     }
 
     static class ChatViewHolderItem {

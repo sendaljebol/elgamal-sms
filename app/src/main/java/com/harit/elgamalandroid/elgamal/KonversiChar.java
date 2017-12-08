@@ -7,7 +7,6 @@ package com.harit.elgamalandroid.elgamal;
 import java.util.ArrayList;
 
 /**
- *
  * @author isahroni
  */
 public class KonversiChar {

@@ -2,6 +2,7 @@ package com.harit.elgamalandroid;
 
 
 import android.provider.Telephony;
+import android.support.annotation.NonNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,13 +11,14 @@ import java.util.Date;
  * This class represents SMS.
  *
  * @author itcuties
- *
  */
-public class SMSData {
+public class SMSData implements Comparable<SMSData>{
 
     public final static int TYPE_INBOX = Telephony.TextBasedSmsColumns.MESSAGE_TYPE_INBOX;
-    public final static int TYPE_SENT= Telephony.TextBasedSmsColumns.MESSAGE_TYPE_SENT;
+    public final static int TYPE_SENT = Telephony.TextBasedSmsColumns.MESSAGE_TYPE_SENT;
+
     public static final java.lang.String ADDRESS_ARGS = "ADDRESS_ARGS";
+    public static final String CONTACT_ARGS = "CONTACT_ARGS";
     // Number from witch the sms was send
     private String number;
     private String ContactName;
@@ -48,7 +50,7 @@ public class SMSData {
         return datesent;
     }
 
-    public Date getDateSent(){
+    public Date getDateSent() {
         return new Date(datesent);
     }
 
@@ -56,17 +58,18 @@ public class SMSData {
         this.datesent = datesent;
     }
 
-    public String getDateSentInFormat(String format){
+    public String getDateSentInFormat(String format) {
 
         SimpleDateFormat sdf = new SimpleDateFormat(format); //Or whatever format fits best your needs.
 
         return sdf.format(datesent);
     }
+
     public long getDateReceivedMilis() {
         return datereceived;
     }
 
-    public Date getDateReceived(){
+    public Date getDateReceived() {
         return new Date(datereceived);
     }
 
@@ -79,7 +82,7 @@ public class SMSData {
     }
 
     public void setNumber(String number) {
-        if(number == null) number = "";
+        if (number == null) number = "";
         this.number = number;
     }
 
@@ -91,12 +94,20 @@ public class SMSData {
         this.body = body;
     }
 
-    public boolean equals(Object o){
-        if (o instanceof SMSData){
+    public boolean equals(Object o) {
+        if (o instanceof SMSData) {
             SMSData temp = (SMSData) o;
             if (this.number.equals(temp.getNumber()))
                 return true;
         }
         return false;
     }
+
+    @Override
+    public int compareTo(@NonNull SMSData smsData) {
+        if(datesent > smsData.getDateSentMilis())return 1;
+        if(datesent < smsData.getDateSentMilis())return -1;
+        return 0;
+    }
+
 }

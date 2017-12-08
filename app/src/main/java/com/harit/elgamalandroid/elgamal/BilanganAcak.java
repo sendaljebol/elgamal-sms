@@ -8,16 +8,15 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 
 /**
- *
  * @author isahroni
  */
 public class BilanganAcak {
 
     private ArrayList listNumber = new ArrayList();
 
-    public ArrayList getBilanganAcak(String pesan, BigInteger p) {
+    public ArrayList getBilanganAcak(String pesan, int p) {
 
-        int pp = p.intValue() - 2;
+        int pp = p - 2;
         for (int i = 0; i < pesan.length(); i++) {
             int rand = (int) (pp * Math.random());
 

@@ -7,7 +7,6 @@ package com.harit.elgamalandroid.elgamal;
 import java.util.ArrayList;
 
 /**
- *
  * @author isahroni
  */
 public class PecahChiperText {
@@ -18,7 +17,7 @@ public class PecahChiperText {
 
     public void setChiper(String chiper) {
         pecah = chiper.split(" ");
-        
+
         for (int i = 0; i < pecah.length; i++) {
 
             if (i % 2 == 0) {

@@ -7,7 +7,6 @@ package com.harit.elgamalandroid.elgamal;
 import java.math.BigInteger;
 
 /**
- *
  * @author isahroni
  */
 public class BuatKunci {
@@ -16,13 +15,12 @@ public class BuatKunci {
     private boolean cek;
     private int bilanganPrima;
 
-    public BigInteger getKunci(BigInteger p, BigInteger g, BigInteger x) {
-        y = g.modPow(x, p);
+    public BigInteger getKunci(int p, int g, int x) {
+        BigInteger a = BigInteger.valueOf(p);
+        BigInteger b = BigInteger.valueOf(g);
+        BigInteger c = BigInteger.valueOf(x);
+        y = b.modPow(c, a);
         return y;
-    }
-
-    public void setPrima(int bilanganPrima) {
-        this.bilanganPrima = bilanganPrima;
     }
 
     public boolean isPrima() {
@@ -36,5 +34,9 @@ public class BuatKunci {
         }
 
         return cek;
+    }
+
+    public void setPrima(int bilanganPrima) {
+        this.bilanganPrima = bilanganPrima;
     }
 }

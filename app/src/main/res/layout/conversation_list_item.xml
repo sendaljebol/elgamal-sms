@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tv_from_conv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:text="From Someone"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp" />
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="14dp"
+        android:text="From Someone"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <TextView
         android:id="@+id/tv_content_conv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="android.app.ActivityThread.access $3000 (Activity Thread. java:156)"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:layout_below="@+id/tv_from_conv"
+        android:layout_alignEnd="@+id/tv_date_conv"
         android:layout_alignLeft="@+id/tv_from_conv"
+        android:layout_alignRight="@+id/tv_date_conv"
         android:layout_alignStart="@+id/tv_from_conv"
+        android:layout_below="@+id/tv_from_conv"
         android:layout_marginTop="5dp"
         android:maxLines="1"
-        android:layout_alignRight="@+id/tv_date_conv"
-        android:layout_alignEnd="@+id/tv_date_conv" />
+        android:text="android.app.ActivityThread.access $3000 (Activity Thread. java:156)"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
     <TextView
         android:id="@+id/tv_date_conv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_from_conv"
+        android:layout_alignBottom="@+id/tv_from_conv"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
         android:text="12 Sept 2017"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@android:color/darker_gray"
-        android:textSize="12sp"
-        android:layout_alignBaseline="@+id/tv_from_conv"
-        android:layout_alignBottom="@+id/tv_from_conv"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="10dp"/>
+        android:textSize="12sp" />
 </RelativeLayout>

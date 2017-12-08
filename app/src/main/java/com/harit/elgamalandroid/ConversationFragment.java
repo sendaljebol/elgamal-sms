@@ -32,10 +32,12 @@ import java.util.List;
  */
 
 public class ConversationFragment extends Fragment implements LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
-    private ListView lvConversation;
     public static final int PERMISSION_ALL = 1;
     List<SMSData> smsList = new ArrayList<SMSData>();
-OnConversationSelectedListener cListener;
+    OnConversationSelectedListener cListener;
+    private ListView lvConversation;
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -48,15 +50,11 @@ OnConversationSelectedListener cListener;
 
     }
 
-    public interface OnConversationSelectedListener{
-        public void onConversationSelected(String address);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       return inflater.inflate(R.layout.conversation_fragment, container, false);
+        return inflater.inflate(R.layout.conversation_fragment, container, false);
     }
 
     @Override
@@ -66,11 +64,11 @@ OnConversationSelectedListener cListener;
         // The request code used in ActivityCompat.requestPermissions()
         // and returned in the Activity's onRequestPermissionsResult()
 
-        String[] PERMISSIONS = {Manifest.permission.READ_CONTACTS, Manifest.permission.READ_SMS};
+        String[] PERMISSIONS = {Manifest.permission.READ_CONTACTS, Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS};
 
-        if(!hasPermissions(getContext(), PERMISSIONS)){
+        if (!hasPermissions(getContext(), PERMISSIONS)) {
             requestPermissions(PERMISSIONS, PERMISSION_ALL);
-        }else{
+        } else {
 
             getActivity().getSupportLoaderManager().restartLoader(1, null, this);
         }
@@ -78,13 +76,23 @@ OnConversationSelectedListener cListener;
         lvConversation.setOnItemClickListener(this);
         Log.d("on view created", "onviewcreated conv fa");
     }
-
+    //check all the permissions
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_ALL:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d("permission ", "Granted permission");
                     getActivity().getSupportLoaderManager().initLoader(1, null, this);
                 } else {
@@ -109,7 +117,7 @@ OnConversationSelectedListener cListener;
     public void onLoadFinished(Loader<Cursor> loader, Cursor c) {
 
         Log.d("conversation fragment", "onloadfinished");
-        if(c.isClosed())return;
+        if (c.isClosed()) return;
         // Read the sms data and store it in the list
         if (c.moveToFirst()) {
             for (int i = 0; i < c.getCount(); i++) {
@@ -121,11 +129,11 @@ OnConversationSelectedListener cListener;
                 sms.setDatereceived(c.getLong(c.getColumnIndexOrThrow("date")));
                 sms.setType(c.getInt(c.getColumnIndexOrThrow("type")));
                 //kalau belum ada di list tambahin
-                if(smsList.contains(sms) == false){
+                if (smsList.contains(sms) == false) {
                     smsList.add(sms);
-                }else{
+                } else {
                     //kalau udah ada ambil yang paling baru
-                    if(smsList.get(smsList.indexOf(sms)).getDateSent().before(sms.getDateSent())){
+                    if (smsList.get(smsList.indexOf(sms)).getDateSent().before(sms.getDateSent())) {
                         smsList.set(smsList.indexOf(sms), sms);
                     }
                 }
@@ -136,38 +144,35 @@ OnConversationSelectedListener cListener;
         c.close();
 
         //set nama kontak jika ada di daftar
-        for(SMSData s: smsList){
-            if(!s.getNumber().isEmpty())
-            s.setContactName(getContactDisplayNameByNumber(s.getNumber()));
+        for (SMSData s : smsList) {
+            if (!s.getNumber().isEmpty()){
+                String contact = getContactDisplayNameByNumber(s.getNumber());
+                if (contact == null || contact.isEmpty() || contact.equals("?")) {
+                    s.setContactName(null);
+                } else {
+                    s.setContactName(contact);
+                }
+
+
+            }
         }
         // Set smsList in the ListAdapter
         lvConversation.setAdapter(new ConversationListAdapter(getActivity(), smsList));
     }
 
-    //check all the permissions
-    public static boolean hasPermissions(Context context, String... permissions) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     @Override
-    public void onLoaderReset(Loader loader) {
+    public void onLoaderReset(Loader<Cursor> loader) {
 
     }
+
 
     public String getContactDisplayNameByNumber(String number) {
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
-        String name = "?";
+        String name = "";
 
         ContentResolver contentResolver = getActivity().getContentResolver();
-        Cursor contactLookup = contentResolver.query(uri, new String[] {BaseColumns._ID,
-                ContactsContract.PhoneLookup.DISPLAY_NAME }, null, null, null);
+        Cursor contactLookup = contentResolver.query(uri, new String[]{BaseColumns._ID,
+                ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
 
         try {
             if (contactLookup != null && contactLookup.getCount() > 0) {
@@ -187,7 +192,10 @@ OnConversationSelectedListener cListener;
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         SMSData smsData = (SMSData) smsList.get(position);
+        cListener.onConversationSelected(smsData.getNumber(), smsData.getContactName());
+    }
 
-        cListener.onConversationSelected(smsData.getNumber());
+    public interface OnConversationSelectedListener {
+        public void onConversationSelected(String address, String contactName);
     }
 }
