@@ -1,6 +1,7 @@
 package com.harit.elgamalandroid;
 
 import android.content.Context;
+import android.provider.Telephony;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by harit on 11/29/2017.
@@ -33,14 +36,17 @@ public class ChatListAdapter extends ArrayAdapter<SMSData> {
         ChatListAdapter.ChatViewHolderItem viewHolder;
         SMSData data = smsList.get(position);
 
-        if(convertView == null){
-            Log.d("data tyoe: ", data.getType() + " | "+SMSData.TYPE_SENT+ " | "+SMSData.TYPE_INBOX);
-            if(data.getType() == SMSData.TYPE_INBOX){
+        if (convertView == null) {
+            if (data.getType() == SMSData.TYPE_INBOX) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.inbox_chat_item, null);
-            }else{
+            } else {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.sent_chat_item, null);
             }
         }
+
+        Log.e("pattern match: ", data.getBody()+" | "
+                +data.getDateSent()
+                + " | "+data.getType());
 
         TextView dateSent = (TextView) convertView.findViewById(R.id.tv_date_chat);
         TextView content = (TextView) convertView.findViewById(R.id.tv_content_chat);
@@ -49,15 +55,14 @@ public class ChatListAdapter extends ArrayAdapter<SMSData> {
         convertView.setTag(viewHolder);
 
         viewHolder.getDateSent().setText(data.getDateSentInFormat("MM-dd HH:mm"));
-
         viewHolder.getContent().setText(data.getBody());
 
 
         return convertView;
     }
 
-    static class ChatViewHolderItem{
-        TextView  dateSent, content;
+    static class ChatViewHolderItem {
+        TextView dateSent, content;
 
         public ChatViewHolderItem(TextView dateSent, TextView content) {
             this.dateSent = dateSent;
