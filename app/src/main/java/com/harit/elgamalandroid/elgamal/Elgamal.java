@@ -18,8 +18,8 @@ import java.util.Calendar;
  */
 public class Elgamal {
 
-    private DBHelper dbHelper;
     private static BigInteger p, g, y, x;
+    private DBHelper dbHelper;
 
     public Elgamal(Context context){
         dbHelper = new DBHelper(context);
@@ -29,7 +29,7 @@ public class Elgamal {
 
         int p = dbHelper.getPrimeBasedOnIndex(index);
         int g = p - index;
-        int x = dateSent.get(Calendar.MINUTE);
+        int x = dateSent.get(Calendar.DAY_OF_MONTH);
 
         //check nilai pgx
         if (p < 255) {
@@ -96,7 +96,7 @@ public class Elgamal {
         int index = dateSent.get(Calendar.HOUR_OF_DAY) + 1;
 
         BigInteger p = BigInteger.valueOf(dbHelper.getPrimeBasedOnIndex(index));
-        BigInteger x = BigInteger.valueOf(dateSent.get(Calendar.MINUTE));
+        BigInteger x = BigInteger.valueOf(dateSent.get(Calendar.DAY_OF_MONTH));
 
         System.out.println("p : " + p + ", x" + x);
 
