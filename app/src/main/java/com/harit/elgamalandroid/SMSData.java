@@ -19,15 +19,14 @@ public class SMSData implements Comparable<SMSData>{
 
     public static final java.lang.String ADDRESS_ARGS = "ADDRESS_ARGS";
     public static final String CONTACT_ARGS = "CONTACT_ARGS";
+    String cipher;
     // Number from witch the sms was send
     private String number;
     private String ContactName;
-
     // SMS text body
     private String body;
     private long datesent;
     private long datereceived;
-
     private int type;
 
     public int getType() {
@@ -110,4 +109,11 @@ public class SMSData implements Comparable<SMSData>{
         return 0;
     }
 
+    public String getCipher() {
+        return cipher;
+    }
+
+    public void setCipher(String cipher) {
+        this.cipher = cipher;
+    }
 }

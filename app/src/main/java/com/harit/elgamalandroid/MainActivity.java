@@ -37,11 +37,11 @@ import android.widget.Toast;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements ConversationFragment.OnConversationSelectedListener, View.OnClickListener {
+    public final static int RESULT_PICK_CONTACT = 2113;
+    public final static int NOTIFICATION_ID = 2221;
     private ListView lvConversation;
     private EditText etSMSNumber;
     private SendSMSDialogFragment sendSMSDialogFragment;
-    public final static int RESULT_PICK_CONTACT = 2113;
-    public final static int NOTIFICATION_ID = 2221;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements ConversationFragm
         if (contactName != null) {
             getSupportActionBar().setTitle(contactName);
         } else {
-            getSupportActionBar().setTitle("");
+            getSupportActionBar().setTitle(address);
         }
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

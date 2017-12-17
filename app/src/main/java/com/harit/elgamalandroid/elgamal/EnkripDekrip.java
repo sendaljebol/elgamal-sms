@@ -35,9 +35,6 @@ public class EnkripDekrip {
 
     public char getDekripsi(String nGamma, String nDelta,
                             BigInteger p, BigInteger x) {
-
-
-
             BigInteger a = new BigInteger(nGamma);
             BigInteger b = new BigInteger(nDelta);
 
@@ -47,4 +44,5 @@ public class EnkripDekrip {
 
         return chr;
     }
+
 }

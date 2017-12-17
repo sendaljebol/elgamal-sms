@@ -1,11 +1,12 @@
 package com.harit.elgamalandroid;
 
-import android.app.ActionBar;
+import android.app.Dialog;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -15,22 +16,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.harit.elgamalandroid.elgamal.BilanganAcak;
-import com.harit.elgamalandroid.elgamal.BuatKunci;
 import com.harit.elgamalandroid.elgamal.Elgamal;
-import com.harit.elgamalandroid.elgamal.EnkripDekrip;
-import com.harit.elgamalandroid.elgamal.KonversiChar;
-import com.harit.elgamalandroid.elgamal.PecahChiperText;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -41,7 +37,8 @@ import java.util.regex.Pattern;
  * Created by harit on 11/29/2017.
  */
 
-public class ChatFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
+public class ChatFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, AdapterView.OnItemClickListener {
+    EditText etP, etX;
     private ListView lvChat;
     private ImageButton btnSend, btnSendEncrypted;
     private String address = "";
@@ -75,6 +72,8 @@ public class ChatFragment extends Fragment implements LoaderManager.LoaderCallba
         btnSendEncrypted.setOnClickListener(this);
 
         elgamal = new Elgamal(getContext());
+
+        lvChat.setOnItemClickListener(this);
     }
 
     @Override
@@ -122,6 +121,7 @@ public class ChatFragment extends Fragment implements LoaderManager.LoaderCallba
                             cal.setTime(sms.getDateSent());
 
                             String decrypted = elgamal.decrypt(message, cal);
+                            sms.setCipher(message);
                             sms.setBody(decrypted);
                         }catch (Exception e){
                             Log.e("dekrip fail: ", message);
@@ -154,7 +154,6 @@ public class ChatFragment extends Fragment implements LoaderManager.LoaderCallba
 
     }
 
-
     @Override
     public void onClick(View view) {
         //kalau kosong return dulu aja
@@ -166,15 +165,64 @@ public class ChatFragment extends Fragment implements LoaderManager.LoaderCallba
                 break;
             case R.id.btn_send_encrypted_chat:
 
-                Calendar c  =Calendar.getInstance();
+                EncryptDialogFragment encryptDialogFragment = new EncryptDialogFragment();
+                encryptDialogFragment.show(getFragmentManager(), "encrypt");
+                getActivity().getSupportFragmentManager().executePendingTransactions();
+
+                Dialog d = encryptDialogFragment.getDialog();
+
+                etP = d.findViewById(R.id.et_public_encrypt);
+                etX = d.findViewById(R.id.et_private_encrypt);
+
+                Button btn = d.findViewById(R.id.btn_manualencrypt_encrypt);
+                btn.setOnClickListener(this);
+
+                Button btn2 = d.findViewById(R.id.btn_autoencrypt_encrypt);
+                btn2.setOnClickListener(this);
+
+                break;
+            case R.id.btn_autoencrypt_encrypt:
+
+                Calendar c = Calendar.getInstance();
 
                 String encrypted = elgamal.encrypt(etBody.getText().toString(), c);
                 Log.d("encrypted", encrypted);
-
-                String decrypted = elgamal.decrypt(encrypted, c);
-                Log.d("decrypt", decrypted);
+                Log.d("message", "address: " + address + " | msg : " + encrypted);
 
                 sendLongSMS(address, encrypted);
+
+                Fragment prev = getFragmentManager().findFragmentByTag("encrypt");
+                if (prev != null) {
+                    DialogFragment df = (DialogFragment) prev;
+                    df.dismiss();
+                }
+                break;
+            case R.id.btn_manualencrypt_encrypt:
+                Elgamal e = new Elgamal(getContext());
+                int p = Integer.parseInt(etP.getText().toString());
+                int x = Integer.parseInt(etX.getText().toString());
+
+                //check nilai pgx
+                if (p < 255) {
+                    Toast.makeText(getContext(), "p harus lebih dari 255", Toast.LENGTH_SHORT).show();
+                    break;
+                } else if (e.isPrime(p) == false) {
+                    Toast.makeText(getContext(), "p harus bilangan prima", Toast.LENGTH_SHORT).show();
+                    break;
+                } else if (x < 1 | x >= p - 2) {
+                    Toast.makeText(getContext(), "Nilai x : 1 < x <= p-2", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
+                String encrypt = e.encrypt(etBody.getText().toString(), p, x);
+                Log.d("message", "address: " + address + " | msg : " + encrypt);
+                sendLongSMS(address, encrypt);
+
+                prev = getFragmentManager().findFragmentByTag("encrypt");
+                if (prev != null) {
+                    DialogFragment df = (DialogFragment) prev;
+                    df.dismiss();
+                }
                 break;
         }
     }
@@ -202,7 +250,9 @@ public class ChatFragment extends Fragment implements LoaderManager.LoaderCallba
         try {
             SmsManager smsManager = SmsManager.getDefault();
             ArrayList<String> parts = smsManager.divideMessage(msg);
+
             smsManager.sendMultipartTextMessage(phoneNo, null, parts, null, null);
+
             Toast.makeText(getContext(), "Message Sent",
                     Toast.LENGTH_LONG).show();
             etBody.setText("");
@@ -218,5 +268,19 @@ public class ChatFragment extends Fragment implements LoaderManager.LoaderCallba
             ex.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        SMSData smsData = (SMSData) smsList.get(position);
+        if (smsData.getCipher() != null) {
+            DecryptDialogFragment decryptDialogFragment = new DecryptDialogFragment();
+
+            Bundle args = new Bundle();
+            args.putString("cipher", smsData.getCipher());
+            decryptDialogFragment.setArguments(args);
+
+            decryptDialogFragment.show(getFragmentManager(), "decrypt");
+        }
     }
 }
